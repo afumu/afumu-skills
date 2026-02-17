@@ -1,0 +1,333 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AI News 4-Layer Framework Output",
+  "description": "按照四层AI框架分类的新闻输出结构",
+  "type": "object",
+  "required": ["metadata", "layers", "key_insights"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "description": "元数据信息",
+      "required": ["generated_at", "date_range", "total_articles", "sources_count", "layers_distribution"],
+      "properties": {
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "生成时间 (ISO 8601格式)",
+          "example": "2026-02-17T10:30:00Z"
+        },
+        "date_range": {
+          "type": "string",
+          "description": "新闻覆盖的时间范围",
+          "example": "2026-02-16 to 2026-02-17"
+        },
+        "total_articles": {
+          "type": "integer",
+          "description": "总文章数",
+          "minimum": 0,
+          "example": 68
+        },
+        "sources_count": {
+          "type": "integer",
+          "description": "新闻来源数量",
+          "minimum": 0,
+          "example": 15
+        },
+        "layers_distribution": {
+          "type": "object",
+          "description": "各层文章数量分布",
+          "required": ["evolution", "startup", "usage", "miracle"],
+          "properties": {
+            "evolution": {
+              "type": "integer",
+              "description": "变革层文章数",
+              "minimum": 0
+            },
+            "startup": {
+              "type": "integer",
+              "description": "创业层文章数",
+              "minimum": 0
+            },
+            "usage": {
+              "type": "integer",
+              "description": "使用层文章数",
+              "minimum": 0
+            },
+            "miracle": {
+              "type": "integer",
+              "description": "奇迹层文章数",
+              "minimum": 0
+            }
+          }
+        },
+        "collection_params": {
+          "type": "object",
+          "description": "收集参数（可选）",
+          "properties": {
+            "time_range": {
+              "type": "string",
+              "description": "时间范围设置",
+              "example": "last 24 hours"
+            },
+            "depth_level": {
+              "type": "string",
+              "enum": ["brief", "standard", "deep"],
+              "description": "深度级别"
+            },
+            "focus_layers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["evolution", "startup", "usage", "miracle"]
+              },
+              "description": "重点关注的层次"
+            }
+          }
+        },
+        "failed_sources": {
+          "type": "array",
+          "description": "无法访问的新闻源（可选）",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "layers": {
+      "type": "object",
+      "description": "四层框架分类的新闻",
+      "required": ["evolution", "startup", "usage", "miracle"],
+      "properties": {
+        "evolution": {
+          "$ref": "#/definitions/layer"
+        },
+        "startup": {
+          "$ref": "#/definitions/layer"
+        },
+        "usage": {
+          "$ref": "#/definitions/layer"
+        },
+        "miracle": {
+          "$ref": "#/definitions/layer"
+        }
+      }
+    },
+    "key_insights": {
+      "type": "array",
+      "description": "跨层次的关键洞察（3-5条）",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "description": "一条关键洞察"
+      },
+      "example": [
+        "变革层：OpenAI和Anthropic本周发布重大模型更新，推理能力显著提升",
+        "创业层：AI基础设施公司本周融资总额达23亿美元，创历史新高",
+        "使用层：企业级提示词工程工具快速普及，采用率提升300%",
+        "奇迹层：多位AI领袖调整AGI时间线预测，普遍认为2027-2028年可能实现"
+      ]
+    }
+  },
+  "definitions": {
+    "layer": {
+      "type": "object",
+      "description": "单个层次的新闻集合",
+      "required": ["name", "description", "count", "articles"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "层次名称（中英文）",
+          "example": "变革层 (Evolution Layer)"
+        },
+        "description": {
+          "type": "string",
+          "description": "层次描述",
+          "example": "底层技术研究、模型发布、开源项目、技术突破"
+        },
+        "count": {
+          "type": "integer",
+          "description": "该层文章数量",
+          "minimum": 0,
+          "example": 20
+        },
+        "articles": {
+          "type": "array",
+          "description": "文章列表",
+          "items": {
+            "$ref": "#/definitions/article"
+          }
+        }
+      }
+    },
+    "article": {
+      "type": "object",
+      "description": "单篇新闻文章",
+      "required": ["title", "summary", "key_points", "impact", "source", "url", "published_date", "relevance_score", "importance"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "文章标题（中文）",
+          "example": "OpenAI发布GPT-5，推理能力提升10倍"
+        },
+        "original_title": {
+          "type": "string",
+          "description": "原始标题（如果是英文源，可选）",
+          "example": "OpenAI Releases GPT-5 with 10x Reasoning Improvement"
+        },
+        "summary": {
+          "type": "string",
+          "description": "文章摘要（中文，1-2句话）",
+          "example": "OpenAI今日宣布推出GPT-5，该模型在推理任务上实现了10倍性能提升，并支持原生多模态处理和100万token上下文窗口。"
+        },
+        "key_points": {
+          "type": "array",
+          "description": "关键要点（中文，3-5条）",
+          "minItems": 2,
+          "maxItems": 5,
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "推理任务性能提升10倍",
+            "原生多模态处理能力",
+            "上下文窗口扩展至100万token",
+            "API价格降低30%"
+          ]
+        },
+        "impact": {
+          "type": "string",
+          "description": "影响分析（中文，1-2句话）",
+          "example": "这是大语言模型推理能力的重大突破，将显著提升AI在复杂问题解决和多步骤任务中的表现，预计将推动企业级AI应用的快速普及。"
+        },
+        "source": {
+          "type": "string",
+          "description": "新闻来源",
+          "example": "OpenAI Blog"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "文章链接",
+          "example": "https://openai.com/blog/gpt-5-announcement"
+        },
+        "published_date": {
+          "type": "string",
+          "format": "date",
+          "description": "发布日期 (YYYY-MM-DD)",
+          "example": "2026-02-17"
+        },
+        "relevance_score": {
+          "type": "number",
+          "description": "相关性评分 (0.0-1.0)",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "example": 0.98
+        },
+        "importance": {
+          "type": "string",
+          "enum": ["high", "medium", "low"],
+          "description": "重要性等级",
+          "example": "high"
+        },
+        "secondary_layers": {
+          "type": "array",
+          "description": "次要层次（可选，如果文章跨多个层次）",
+          "items": {
+            "type": "string",
+            "enum": ["evolution", "startup", "usage", "miracle"]
+          },
+          "example": ["startup"]
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签（可选）",
+          "items": {
+            "type": "string"
+          },
+          "example": ["GPT-5", "OpenAI", "大语言模型", "推理能力"]
+        },
+        "language": {
+          "type": "string",
+          "description": "原始语言（可选）",
+          "enum": ["zh", "en", "other"],
+          "example": "en"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "metadata": {
+        "generated_at": "2026-02-17T10:30:00Z",
+        "date_range": "2026-02-16 to 2026-02-17",
+        "total_articles": 68,
+        "sources_count": 15,
+        "layers_distribution": {
+          "evolution": 20,
+          "startup": 18,
+          "usage": 22,
+          "miracle": 8
+        },
+        "collection_params": {
+          "time_range": "last 24 hours",
+          "depth_level": "standard",
+          "focus_layers": ["evolution", "startup", "usage", "miracle"]
+        }
+      },
+      "layers": {
+        "evolution": {
+          "name": "变革层 (Evolution Layer)",
+          "description": "底层技术研究、模型发布、开源项目、技术突破",
+          "count": 20,
+          "articles": [
+            {
+              "title": "OpenAI发布GPT-5，推理能力提升10倍",
+              "original_title": "OpenAI Releases GPT-5 with 10x Reasoning Improvement",
+              "summary": "OpenAI今日宣布推出GPT-5，该模型在推理任务上实现了10倍性能提升，并支持原生多模态处理和100万token上下文窗口。",
+              "key_points": [
+                "推理任务性能提升10倍",
+                "原生多模态处理能力",
+                "上下文窗口扩展至100万token",
+                "API价格降低30%"
+              ],
+              "impact": "这是大语言模型推理能力的重大突破，将显著提升AI在复杂问题解决和多步骤任务中的表现，预计将推动企业级AI应用的快速普及。",
+              "source": "OpenAI Blog",
+              "url": "https://openai.com/blog/gpt-5-announcement",
+              "published_date": "2026-02-17",
+              "relevance_score": 0.98,
+              "importance": "high",
+              "secondary_layers": ["startup"],
+              "tags": ["GPT-5", "OpenAI", "大语言模型", "推理能力"],
+              "language": "en"
+            }
+          ]
+        },
+        "startup": {
+          "name": "创业层 (Startup Layer)",
+          "description": "AI创业、新产品、融资、商业模式",
+          "count": 18,
+          "articles": []
+        },
+        "usage": {
+          "name": "使用层 (Usage Layer)",
+          "description": "利用AI工具降本增效、提示词、智能体应用",
+          "count": 22,
+          "articles": []
+        },
+        "miracle": {
+          "name": "奇迹层 (Miracle Layer)",
+          "description": "AI长期未来思考、AGI/ASI、伦理、政策",
+          "count": 8,
+          "articles": []
+        }
+      },
+      "key_insights": [
+        "变革层：OpenAI和Anthropic本周发布重大模型更新，推理能力显著提升",
+        "创业层：AI基础设施公司本周融资总额达23亿美元，创历史新高",
+        "使用层：企业级提示词工程工具快速普及，采用率提升300%",
+        "奇迹层：多位AI领袖调整AGI时间线预测，普遍认为2027-2028年可能实现"
+      ]
+    }
+  ]
+}
